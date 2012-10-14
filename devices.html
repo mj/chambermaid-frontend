@@ -1,0 +1,75 @@
+<!DOCTYPE html> 
+<html>
+    <head>
+	    <meta charset="utf-8">
+	    <meta name="viewport" content="width=device-width, initial-scale=1"> 
+	    <title>Single page template</title> 
+	    <link rel="stylesheet" href="jquery.mobile-1.1.1.min.css" />
+	    <script src="jquery-1.8.1.min.js"></script>
+	    <script src="jquery.mobile-1.1.1.min.js"></script>
+    </head> 
+
+    <body> 
+        <div id="devices" data-role="page">
+            <script src="Class.js"></script>
+            <script src="List.js"></script>
+            <script src="Loader.js"></script>
+            <script src="DeviceListLoader.js"></script>
+            <script src="ParameterParser.js"></script>
+
+            <script type="text/javascript">
+                $("#devices").bind("pageshow", function() {
+                    $.mobile.showPageLoadingMsg();
+
+                    var dataHandler = function(list) {
+                        var items = list.getAll();
+                        var target = $("#device-list");
+
+                        if (items.length == 0) {
+                            $.mobile.showPageLoadingMsg("a", "Unable to load data.", true);
+                            return;
+                        }
+
+                        for (var offset in items) {
+                            var device = items[offset];
+
+                            var type = "Heating";
+                            var link = "temperature.html";
+                            if (device.type == "CUL_FHTTK") {
+                                type = "Window";
+                                link = "window.html";
+                            } 
+
+                            var item = '<li id="device-' + device.id + '">' 
+                                + '<a href="' + link + '?device=' + device.id + '">'
+                                + '    ' + device.label
+                                + '    <p class="ui-li-aside"><strong>' + type + '</strong></p>'
+                                + '</a>'
+                                + '</li>';
+
+                            $("#device-" + device.id).remove();
+                            target.append(item);
+                        }
+
+                        target.listview("refresh");
+                        $.mobile.hidePageLoadingMsg();
+                    }
+
+                    var parser = new ParameterParser();
+
+                    var loader = new DeviceListLoader(false, dataHandler);
+                    loader.load(parser.getToken("room"));
+                })
+            </script>
+
+	        <div data-role="header">
+		        <h1>...</h1>
+	        </div>
+
+	        <div data-role="content">
+                <ul data-role="listview" data-inset="true" id="device-list">
+                </ul>
+	        </div>	
+	    </div>
+    </body>
+</html>

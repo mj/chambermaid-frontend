@@ -1,0 +1,95 @@
+<!DOCTYPE html> 
+<html>
+    <head>
+	    <meta charset="utf-8">
+	    <meta name="viewport" content="width=device-width, initial-scale=1"> 
+	    <title>Single page template</title> 
+	    <link rel="stylesheet" href="jquery.mobile-1.1.1.min.css" />
+	    <script src="jquery-1.8.1.min.js"></script>
+	    <script src="jquery.mobile-1.1.1.min.js"></script>
+    </head> 
+
+    <body> 
+
+        <div data-role="page">
+	        <div data-role="header">
+		        <h1 id="label-label"></h1>
+	        </div><!-- /header -->
+
+	        <div data-role="content">
+	            <h3>Control</h3>
+                <ul data-role="listview" data-inset="true">
+                    <li>
+                        Current temperature
+                        <p class="ui-li-aside"><strong id="label-current-temperature">?</strong></p>
+                    <li>
+        	        	<label for="desired-temperature">Desired temperature:</label>
+        			 	<input type="range" data-highlight="true" name="desired-temperature" id="desired-temperature" value="0" min="0" max="30"  />
+                    </li>
+
+        			<li class="ui-body ui-body-b">
+        				<fieldset class="ui-grid-a">
+        					<button id="temperature-submit" type="submit" data-theme="b" name="submit" value="submit-value">Save</button>
+        			    </fieldset>
+        			</li>
+        		</ul>
+
+	            <h3>Device Status</h3>
+                <ul data-role="listview" data-inset="true">
+                    <li>
+                        Battery
+                        <p class="ui-li-aside"><strong id="label-battery">?</strong></p>
+                    </li>
+                    <li>
+                        Actuator
+                        <p class="ui-li-aside"><strong id="label-actuator">?</strong></p>
+                    </li>
+                    <li>
+                        Warnings
+                        <p class="ui-li-aside" id="label-warnings">?</p>
+                    </li>
+                </ul>
+	        </div>
+	    </div>
+    </body>
+
+    <script src="Class.js"></script>
+    <script src="Loader.js"></script>
+    <script src="DeviceLoader.js"></script>
+    <script src="TemperatureSetter.js"></script>
+    <script src="ParameterParser.js"></script>
+
+    <script type="text/javascript">
+        $(document).ready(function() {
+            var deviceID = "";
+
+            $.mobile.showPageLoadingMsg();
+
+            var dataHandler = function(device) {
+                deviceID = device.id;
+
+                $("#label-label").html(device.label);
+                $("#label-current-temperature").html(device['measured-temp']);
+                $("#label-battery").html(device.battery);
+                $("#label-actuator").html(device.actuator);
+                $("#label-warnings").html(device.warnings);
+
+                $("#desired-temperature").attr("value", device['desired-temp']);
+                $("#desired-temperature").slider("refresh");
+
+                $.mobile.hidePageLoadingMsg();
+            }
+
+            var parser = new ParameterParser();
+
+            var loader = new DeviceLoader(false, dataHandler);
+            loader.load(parser.getToken("device"));
+            
+            $("#temperature-submit").click(function() {
+                var temperature = $("#desired-temperature").val();
+                var setter = new TemperatureSetter();
+                setter.set(deviceID, temperature);
+            })
+        });
+    </script>
+</html>

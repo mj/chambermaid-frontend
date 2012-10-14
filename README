@@ -1,0 +1,4 @@
+This is the frontend portion of the Chambermaid project.
+
+Uses jQuery Mobile to display mainly FHEM information on mobile
+devices.
