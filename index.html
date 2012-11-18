@@ -1,0 +1,255 @@
+<!DOCTYPE html> 
+<html>
+    <head>
+	    <meta charset="utf-8">
+	    <meta name="viewport" content="width=device-width, initial-scale=1"> 
+	    <title>Single page template</title> 
+	    <link rel="stylesheet" href="jquery.mobile-1.2.0.min.css" />
+	    <script src="jquery-1.8.3.min.js"></script>
+	    <script src="jquery.mobile-1.2.0.min.js"></script>
+
+        <script src="Class.js"></script>
+        <script src="List.js"></script>
+        <script src="Loader.js"></script>
+        <script src="DeviceListLoader.js"></script>
+        <script src="RoomListLoader.js"></script>
+        <script src="ParameterParser.js"></script>
+        <script src="DeviceLoader.js"></script>
+        <script src="TemperatureSetter.js"></script>
+
+    </head> 
+
+    <body> 
+        <div data-role="page" id="rooms" data-add-back-btn="true">
+	        <div data-role="header">
+		        <h1>Rooms</h1>
+	        </div>
+
+	        <div data-role="content">	
+                <ul data-role="listview" data-inset="true" id="room-list">
+                </ul>
+	        </div>	
+
+            <script type="text/javascript">
+                $("#rooms").bind("pageshow", function() {
+                    $.mobile.showPageLoadingMsg();
+
+                    var dataHandler = function(list) {
+                        var items = list.getAll();
+                        var target = $("#room-list");
+
+                        if (items.length == 0) {
+                            $.mobile.showPageLoadingMsg("a", "Unable to load list of rooms.", true);
+                            return;
+                        }
+
+                        for (var offset in items) {
+                            var room = items[offset];
+
+                            var item = '<li>'
+                                + '<a id="room-' + room.id + '" href="#devices" data-room-id="' + room.id + '">'
+                                + '    ' + room.label
+                                + '    <span class="ui-li-count">' + room.temperature + '° C</span>'
+                                + '</a>'
+                                + '</li>';
+
+                            $("#room-" + room.id).remove();
+                            target.append(item);
+
+                            $("#room-" + room.id).click(function() {
+                                localStorage.setItem("room", $(this).attr("data-room-id"));
+                            });
+                        }
+
+                        target.listview("refresh");
+                        $.mobile.hidePageLoadingMsg();
+                    }
+
+                    var loader = new RoomListLoader(false, dataHandler);
+                    loader.load();
+                });
+            </script>
+	    </div>
+
+        <!-- List of devices in a room -->
+
+        <div id="devices" data-role="page" data-add-back-btn="true">
+            <script type="text/javascript">
+                $("#devices").bind("pageshow", function() {
+                    $.mobile.showPageLoadingMsg();
+
+                    var dataHandler = function(list) {
+                        var items = list.getAll();
+                        var target = $("#device-list");
+
+                        if (items.length == 0) {
+                            $.mobile.showPageLoadingMsg("a", "Unable to load data.", true);
+                            return;
+                        }
+
+                        for (var offset in items) {
+                            var device = items[offset];
+
+                            var type = "Heating";
+                            var link = "#temperature";
+                            if (device.type == "CUL_FHTTK") {
+                                type = "Window";
+                                link = "#window";
+                            } 
+
+                            var item = '<li>' 
+                                + '<a id="device-' + device.id + '" href="' + link + '" data-device-id="' + device.id + '">'
+                                + '    ' + device.label
+                                + '    <p class="ui-li-aside"><strong>' + type + '</strong></p>'
+                                + '</a>'
+                                + '</li>';
+
+                            $("#device-" + device.id).remove();
+                            target.append(item);
+
+                            $("#device-" + device.id).click(function() {
+                                localStorage.setItem("device", $(this).attr("data-device-id"));
+                            });
+                        }
+
+                        target.listview("refresh");
+                        $.mobile.hidePageLoadingMsg();
+                    }
+
+                    var parser = new ParameterParser();
+                    var loader = new DeviceListLoader(false, dataHandler);
+                    loader.load(parser.getToken("room"));
+                })
+            </script>
+
+	        <div data-role="header">
+		        <h1>Devices</h1>
+	        </div>
+
+	        <div data-role="content">
+                <ul data-role="listview" data-inset="true" id="device-list">
+                </ul>
+	        </div>	
+	    </div>
+
+        <div data-role="page" data-add-back-btn="true" id="temperature">
+	        <div data-role="header">
+		        <h1 id="label-label"></h1>
+	        </div><!-- /header -->
+
+	        <div data-role="content">
+	            <h3>Control</h3>
+                <ul data-role="listview" data-inset="true">
+                    <li>
+                        Current temperature
+                        <p class="ui-li-aside"><strong id="label-current-temperature">?</strong></p>
+                    <li>
+        	        	<label for="desired-temperature">Desired temperature:</label>
+        			 	<input type="range" data-highlight="true" name="desired-temperature" id="desired-temperature" value="0" min="0" max="30"  />
+                    </li>
+
+        			<li class="ui-body ui-body-b">
+        				<fieldset class="ui-grid-a">
+        					<button id="temperature-submit" type="submit" data-theme="b" name="submit" value="submit-value">Save</button>
+        			    </fieldset>
+        			</li>
+        		</ul>
+
+	            <h3>Device Status</h3>
+                <ul data-role="listview" data-inset="true">
+                    <li>
+                        Battery
+                        <p class="ui-li-aside"><strong id="label-battery">?</strong></p>
+                    </li>
+                    <li>
+                        Actuator
+                        <p class="ui-li-aside"><strong id="label-actuator">?</strong></p>
+                    </li>
+                    <li>
+                        Warnings
+                        <p class="ui-li-aside" id="label-warnings">?</p>
+                    </li>
+                </ul>
+	        </div>
+
+            <script type="text/javascript">
+                $(document).bind("pageshow", function() {
+                    var deviceID = "";
+
+                    $.mobile.showPageLoadingMsg();
+
+                    var dataHandler = function(device) {
+                        deviceID = device.id;
+
+                        $("#label-label").html(device.label);
+                        $("#label-current-temperature").html(device['measured-temp']);
+                        $("#label-battery").html(device.battery);
+                        $("#label-actuator").html(device.actuator);
+                        $("#label-warnings").html(device.warnings);
+
+                        $("#desired-temperature").attr("value", device['desired-temp']);
+                        $("#desired-temperature").slider("refresh");
+
+                        $.mobile.hidePageLoadingMsg();
+                    }
+
+                    var parser = new ParameterParser();
+
+                    var loader = new DeviceLoader(false, dataHandler);
+                    loader.load(parser.getToken("device"));
+
+                    $("#temperature-submit").click(function() {
+                        var temperature = $("#desired-temperature").val();
+                        var setter = new TemperatureSetter();
+                        setter.set(deviceID, temperature);
+                    })
+                });
+            </script>
+	    </div>
+
+        <div id="window" data-role="page" data-add-back-btn="true">
+	        <div data-role="header">
+		        <h1 id="label-label">Window</h1>
+	        </div><!-- /header -->
+
+	        <div data-role="content">
+	            <h3>Status</h3>
+
+                <ul data-role="listview" data-inset="true">
+                    <li>
+                        Battery
+                        <p class="ui-li-aside"><strong id="label-battery">?</strong></p>
+                    </li>
+                    <li>
+                        Reliability
+                        <p class="ui-li-aside"><strong id="label-reliability">?</strong></p>
+                    </li>
+                    <li>
+                        Window
+                        <p class="ui-li-aside"><strong id="label-window">?</strong></p>
+                    </li>
+                </ul>
+	        </div>
+
+            <script type="text/javascript">
+                $(document).bind("pageshow", function() {
+                    $.mobile.showPageLoadingMsg();
+
+                    var dataHandler = function(device) {
+                        $("#label-label").html(device.label);
+                        $("#label-battery").html(device.battery);
+                        $("#label-reliability").html(device.reliability);
+                        $("#label-window").html(device.window);
+
+                        $.mobile.hidePageLoadingMsg();
+                    }
+
+                    var parser = new ParameterParser();
+
+                    var loader = new DeviceLoader(false, dataHandler);
+                    loader.load(parser.getToken("device"));
+                });
+            </script>
+	    </div>
+    </body>
+</html>
