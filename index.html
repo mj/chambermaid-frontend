@@ -38,6 +38,8 @@
                         var items = list.getAll();
                         var target = $("#room-list");
 
+                        target.empty();
+
                         if (items.length == 0) {
                             $.mobile.showPageLoadingMsg("a", "Unable to load list of rooms.", true);
                             return;
@@ -81,6 +83,8 @@
                     var dataHandler = function(list) {
                         var items = list.getAll();
                         var target = $("#device-list");
+
+                        target.empty();
 
                         if (items.length == 0) {
                             $.mobile.showPageLoadingMsg("a", "Unable to load data.", true);
