@@ -43,7 +43,7 @@
     <script src="ParameterParser.js"></script>
 
     <script type="text/javascript">
-        $(document).ready(function() {
+        $(document).bind("pageshow", function() {
             $.mobile.showPageLoadingMsg();
 
             var dataHandler = function(device) {
