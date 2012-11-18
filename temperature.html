@@ -50,46 +50,46 @@
                     </li>
                 </ul>
 	        </div>
+
+            <script src="Class.js"></script>
+            <script src="Loader.js"></script>
+            <script src="DeviceLoader.js"></script>
+            <script src="TemperatureSetter.js"></script>
+            <script src="ParameterParser.js"></script>
+
+            <script type="text/javascript">
+                $(document).bind("pageshow", function() {
+                    var deviceID = "";
+
+                    $.mobile.showPageLoadingMsg();
+
+                    var dataHandler = function(device) {
+                        deviceID = device.id;
+
+                        $("#label-label").html(device.label);
+                        $("#label-current-temperature").html(device['measured-temp']);
+                        $("#label-battery").html(device.battery);
+                        $("#label-actuator").html(device.actuator);
+                        $("#label-warnings").html(device.warnings);
+
+                        $("#desired-temperature").attr("value", device['desired-temp']);
+                        $("#desired-temperature").slider("refresh");
+
+                        $.mobile.hidePageLoadingMsg();
+                    }
+
+                    var parser = new ParameterParser();
+
+                    var loader = new DeviceLoader(false, dataHandler);
+                    loader.load(parser.getToken("device"));
+
+                    $("#temperature-submit").click(function() {
+                        var temperature = $("#desired-temperature").val();
+                        var setter = new TemperatureSetter();
+                        setter.set(deviceID, temperature);
+                    })
+                });
+            </script>
 	    </div>
     </body>
-
-    <script src="Class.js"></script>
-    <script src="Loader.js"></script>
-    <script src="DeviceLoader.js"></script>
-    <script src="TemperatureSetter.js"></script>
-    <script src="ParameterParser.js"></script>
-
-    <script type="text/javascript">
-        $(document).bind("pageshow", function() {
-            var deviceID = "";
-
-            $.mobile.showPageLoadingMsg();
-
-            var dataHandler = function(device) {
-                deviceID = device.id;
-
-                $("#label-label").html(device.label);
-                $("#label-current-temperature").html(device['measured-temp']);
-                $("#label-battery").html(device.battery);
-                $("#label-actuator").html(device.actuator);
-                $("#label-warnings").html(device.warnings);
-
-                $("#desired-temperature").attr("value", device['desired-temp']);
-                $("#desired-temperature").slider("refresh");
-
-                $.mobile.hidePageLoadingMsg();
-            }
-
-            var parser = new ParameterParser();
-
-            var loader = new DeviceLoader(false, dataHandler);
-            loader.load(parser.getToken("device"));
-            
-            $("#temperature-submit").click(function() {
-                var temperature = $("#desired-temperature").val();
-                var setter = new TemperatureSetter();
-                setter.set(deviceID, temperature);
-            })
-        });
-    </script>
 </html>

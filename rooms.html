@@ -19,46 +19,47 @@
                 <ul data-role="listview" data-inset="true" id="room-list">
                 </ul>
 	        </div>	
+
+            <script src="Class.js"></script>
+            <script src="List.js"></script>
+            <script src="Loader.js"></script>
+            <script src="RoomListLoader.js"></script>
+
+            <script type="text/javascript">
+                $("#rooms").bind("pageshow", function() {
+                    $.mobile.showPageLoadingMsg();
+
+                    var dataHandler = function(list) {
+                        var items = list.getAll();
+                        var target = $("#room-list");
+
+                        if (items.length == 0) {
+                            $.mobile.showPageLoadingMsg("a", "Unable to load list of rooms.", true);
+                            return;
+                        }
+
+                        for (var offset in items) {
+                            var room = items[offset];
+
+                            var item = '<li id="room-' + room.id + '">'
+                                + '<a href="devices.html?room=' + room.id + '">'
+                                + '    ' + room.label
+                                + '    <span class="ui-li-count">' + room.temperature + '° C</span>'
+                                + '</a>'
+                                + '</li>';
+
+                            $("#room-" + room.id).remove();
+                            target.append(item);
+                        }
+
+                        target.listview("refresh");
+                        $.mobile.hidePageLoadingMsg();
+                    }
+
+                    var loader = new RoomListLoader(false, dataHandler);
+                    loader.load();
+                });
+            </script>
 	    </div>
     </body>
-    <script src="Class.js"></script>
-    <script src="List.js"></script>
-    <script src="Loader.js"></script>
-    <script src="RoomListLoader.js"></script>
-
-    <script type="text/javascript">
-        $("#rooms").bind("pageshow", function() {
-            $.mobile.showPageLoadingMsg();
-
-            var dataHandler = function(list) {
-                var items = list.getAll();
-                var target = $("#room-list");
-
-                if (items.length == 0) {
-                    $.mobile.showPageLoadingMsg("a", "Unable to load list of rooms.", true);
-                    return;
-                }
-
-                for (var offset in items) {
-                    var room = items[offset];
-
-                    var item = '<li id="room-' + room.id + '">'
-                        + '<a href="devices.html?room=' + room.id + '">'
-                        + '    ' + room.label
-                        + '    <span class="ui-li-count">' + room.temperature + '° C</span>'
-                        + '</a>'
-                        + '</li>';
-
-                    $("#room-" + room.id).remove();
-                    target.append(item);
-                }
-
-                target.listview("refresh");
-                $.mobile.hidePageLoadingMsg();
-            }
-
-            var loader = new RoomListLoader(false, dataHandler);
-            loader.load();
-        });
-    </script>
 </html>

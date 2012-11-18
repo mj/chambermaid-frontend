@@ -34,31 +34,31 @@
                     </li>
                 </ul>
 	        </div>
+
+            <script src="Class.js"></script>
+            <script src="Loader.js"></script>
+            <script src="DeviceLoader.js"></script>
+            <script src="ParameterParser.js"></script>
+
+            <script type="text/javascript">
+                $(document).bind("pageshow", function() {
+                    $.mobile.showPageLoadingMsg();
+
+                    var dataHandler = function(device) {
+                        $("#label-label").html(device.label);
+                        $("#label-battery").html(device.battery);
+                        $("#label-reliability").html(device.reliability);
+                        $("#label-window").html(device.window);
+
+                        $.mobile.hidePageLoadingMsg();
+                    }
+
+                    var parser = new ParameterParser();
+
+                    var loader = new DeviceLoader(false, dataHandler);
+                    loader.load(parser.getToken("device"));
+                });
+            </script>
 	    </div>
     </body>
-
-    <script src="Class.js"></script>
-    <script src="Loader.js"></script>
-    <script src="DeviceLoader.js"></script>
-    <script src="ParameterParser.js"></script>
-
-    <script type="text/javascript">
-        $(document).bind("pageshow", function() {
-            $.mobile.showPageLoadingMsg();
-
-            var dataHandler = function(device) {
-                $("#label-label").html(device.label);
-                $("#label-battery").html(device.battery);
-                $("#label-reliability").html(device.reliability);
-                $("#label-window").html(device.window);
-
-                $.mobile.hidePageLoadingMsg();
-            }
-
-            var parser = new ParameterParser();
-
-            var loader = new DeviceLoader(false, dataHandler);
-            loader.load(parser.getToken("device"));
-        });
-    </script>
 </html>
