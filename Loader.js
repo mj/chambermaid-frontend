@@ -7,7 +7,7 @@ var Loader = Class.extend({
         var loader = this;
 
         this.loaderOptions = {
-            dataType: "json",
+            dataType: "jsonp",
 
             error: function(jqXHR, textStatus, errorThrown) {
                 loader.errorHandler(jqXHR, textStatus, errorThrown);
