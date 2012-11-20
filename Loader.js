@@ -1,6 +1,6 @@
 var Loader = Class.extend({
     init : function(inBackground, dataHandler) {
-        this.baseURL = "http://chambermaid.home/chambermaid-server/index.php/";
+        this.baseURL = "chambermaid-data://scalar.home:8181";
         this.dataHandler = dataHandler;
         this.inBackground = inBackground;
 
