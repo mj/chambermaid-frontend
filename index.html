@@ -21,7 +21,7 @@
 
     <body> 
         <div data-role="page" id="rooms" data-add-back-btn="true">
-            <div data-role="header">
+            <div data-role="header" data-position="fixed">
                 <h1>Rooms</h1>
             </div>
 
@@ -126,7 +126,7 @@
                 })
             </script>
 
-            <div data-role="header">
+            <div data-role="header" data-position="fixed">
                 <h1>Devices</h1>
             </div>
 
@@ -137,7 +137,7 @@
         </div>
 
         <div data-role="page" data-add-back-btn="true" id="temperature">
-            <div data-role="header">
+            <div data-role="header" data-position="fixed">
                 <h1 id="label-label"></h1>
             </div><!-- /header -->
 
@@ -153,9 +153,7 @@
                     </li>
 
                     <li class="ui-body ui-body-b">
-                        <fieldset class="ui-grid-a">
-                            <button id="temperature-submit" type="submit" data-theme="b" name="submit" value="submit-value">Save</button>
-                        </fieldset>
+                        <button id="temperature-submit" type="submit" data-theme="b" name="submit" value="submit-value">Save</button>
                     </li>
                 </ul>
 
@@ -206,13 +204,13 @@
                         var temperature = $("#desired-temperature").val();
                         var setter = new TemperatureSetter();
                         setter.set(deviceID, temperature);
-                    })
+                    });
                 });
             </script>
         </div>
 
         <div id="window" data-role="page" data-add-back-btn="true">
-            <div data-role="header">
+            <div data-role="header" data-position="fixed">
                 <h1 id="label-label">Window</h1>
             </div><!-- /header -->
 
