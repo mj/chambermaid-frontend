@@ -1,12 +1,12 @@
 <!DOCTYPE html> 
 <html>
     <head>
-	    <meta charset="utf-8">
-	    <meta name="viewport" content="width=device-width, initial-scale=1"> 
-	    <title>Single page template</title> 
-	    <link rel="stylesheet" href="jquery.mobile-1.2.0.min.css" />
-	    <script src="jquery-1.8.3.min.js"></script>
-	    <script src="jquery.mobile-1.2.0.min.js"></script>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1"> 
+        <title>Single page template</title> 
+        <link rel="stylesheet" href="jquery.mobile-1.2.0.min.css" />
+        <script src="jquery-1.8.3.min.js"></script>
+        <script src="jquery.mobile-1.2.0.min.js"></script>
 
         <script src="Class.js"></script>
         <script src="List.js"></script>
@@ -21,14 +21,14 @@
 
     <body> 
         <div data-role="page" id="rooms" data-add-back-btn="true">
-	        <div data-role="header">
-		        <h1>Rooms</h1>
-	        </div>
+            <div data-role="header">
+                <h1>Rooms</h1>
+            </div>
 
-	        <div data-role="content">	
+            <div data-role="content">   
                 <ul data-role="listview" data-inset="true" id="room-list">
                 </ul>
-	        </div>	
+            </div>  
 
             <script type="text/javascript">
                 $("#rooms").bind("pageshow", function() {
@@ -71,7 +71,7 @@
                     loader.load();
                 });
             </script>
-	    </div>
+        </div>
 
         <!-- List of devices in a room -->
 
@@ -126,40 +126,40 @@
                 })
             </script>
 
-	        <div data-role="header">
-		        <h1>Devices</h1>
-	        </div>
+            <div data-role="header">
+                <h1>Devices</h1>
+            </div>
 
-	        <div data-role="content">
+            <div data-role="content">
                 <ul data-role="listview" data-inset="true" id="device-list">
                 </ul>
-	        </div>	
-	    </div>
+            </div>  
+        </div>
 
         <div data-role="page" data-add-back-btn="true" id="temperature">
-	        <div data-role="header">
-		        <h1 id="label-label"></h1>
-	        </div><!-- /header -->
+            <div data-role="header">
+                <h1 id="label-label"></h1>
+            </div><!-- /header -->
 
-	        <div data-role="content">
-	            <h3>Control</h3>
+            <div data-role="content">
+                <h3>Control</h3>
                 <ul data-role="listview" data-inset="true">
                     <li>
                         Current temperature
                         <p class="ui-li-aside"><strong id="label-current-temperature">?</strong></p>
                     <li>
-        	        	<label for="desired-temperature">Desired temperature:</label>
-        			 	<input type="range" data-highlight="true" name="desired-temperature" id="desired-temperature" value="0" min="0" max="30"  />
+                        <label for="desired-temperature">Desired temperature:</label>
+                        <input type="range" data-highlight="true" name="desired-temperature" id="desired-temperature" value="0" min="0" max="30"  />
                     </li>
 
-        			<li class="ui-body ui-body-b">
-        				<fieldset class="ui-grid-a">
-        					<button id="temperature-submit" type="submit" data-theme="b" name="submit" value="submit-value">Save</button>
-        			    </fieldset>
-        			</li>
-        		</ul>
+                    <li class="ui-body ui-body-b">
+                        <fieldset class="ui-grid-a">
+                            <button id="temperature-submit" type="submit" data-theme="b" name="submit" value="submit-value">Save</button>
+                        </fieldset>
+                    </li>
+                </ul>
 
-	            <h3>Device Status</h3>
+                <h3>Device Status</h3>
                 <ul data-role="listview" data-inset="true">
                     <li>
                         Battery
@@ -174,7 +174,7 @@
                         <p class="ui-li-aside" id="label-warnings">?</p>
                     </li>
                 </ul>
-	        </div>
+            </div>
 
             <script type="text/javascript">
                 $("#temperature").bind("pageshow", function() {
@@ -209,15 +209,15 @@
                     })
                 });
             </script>
-	    </div>
+        </div>
 
         <div id="window" data-role="page" data-add-back-btn="true">
-	        <div data-role="header">
-		        <h1 id="label-label">Window</h1>
-	        </div><!-- /header -->
+            <div data-role="header">
+                <h1 id="label-label">Window</h1>
+            </div><!-- /header -->
 
-	        <div data-role="content">
-	            <h3>Status</h3>
+            <div data-role="content">
+                <h3>Status</h3>
 
                 <ul data-role="listview" data-inset="true">
                     <li>
@@ -233,7 +233,7 @@
                         <p class="ui-li-aside"><strong id="label-window">?</strong></p>
                     </li>
                 </ul>
-	        </div>
+            </div>
 
             <script type="text/javascript">
                 $("#window").bind("pageshow", function() {
@@ -254,6 +254,6 @@
                     loader.load(parser.getToken("device"));
                 });
             </script>
-	    </div>
+        </div>
     </body>
 </html>
